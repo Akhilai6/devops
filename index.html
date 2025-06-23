@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f7f9fc;
+    }
+    h2 {
+      color: #333;
+    }
+    form {
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #004b99;
+    }
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Event Registration Form</h2>
+
+  <form id="regForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="event">Event:</label>
+    <input type="text" id="event" name="event" required>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <p id="message"></p>
+
+  <script>
+    const form = document.getElementById('regForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        event: form.event.value.trim()
+      };
+
+      try {
+        const response = await fetch('http://localhost:4000/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          message.textContent = result.message || 'Registration successful!';
+          message.style.color = 'green';
+          form.reset();
+        } else {
+          message.textContent = result.message || 'Registration failed.';
+          message.style.color = 'red';
+        }
+      } catch (err) {
+        message.textContent = 'Error connecting to server.';
+        message.style.color = 'red';
+      }
+    });
+  </script>
+
+</body>
+</html>
+
